@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descale math - calculators</title>
+<style>
+  :root { --accent: #7a9a2e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f9faf4; color: #2a2d22; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 28px; max-width: 640px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #e0e5cc; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #75804f; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #c9d1a8; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #9aa37f; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Descale math</h1>
+  <p class="lede">The citric acid dose for the kettle, the descaling calendar hard water demands, and what homemade costs against the sachets. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="grid">
+    <section>
+      <h2>Dose plan</h2>
+      <p class="hint">Milliliters become grams and spoons.</p>
+      <label for="d-vol">Appliance volume (ml)</label>
+      <input id="d-vol" type="number" value="1500" min="0" step="100">
+      <label for="d-str">Strength (g per liter)</label>
+      <input id="d-str" type="number" value="20" min="0" step="5">
+      <button id="d-go">Mix the dose</button>
+      <div class="out" id="d-out"></div>
+    </section>
+    <section>
+      <h2>Schedule plan</h2>
+      <p class="hint">The calendar hard water demands.</p>
+      <label for="s-int">Interval (days)</label>
+      <input id="s-int" type="number" value="45" min="0" step="15">
+      <label for="s-min">Minutes per cycle</label>
+      <input id="s-min" type="number" value="20" min="0" step="5">
+      <button id="s-go">Plan the year</button>
+      <div class="out" id="s-out"></div>
+    </section>
+    <section>
+      <h2>Cost plan</h2>
+      <p class="hint">Loose citric acid against brand sachets.</p>
+      <label for="c-g">Grams per cycle</label>
+      <input id="c-g" type="number" value="30" min="0" step="5">
+      <label for="c-cyc">Cycles per year</label>
+      <input id="c-cyc" type="number" value="9" min="0" step="1">
+      <label for="c-kg">Citric acid price (dollars per kilo)</label>
+      <input id="c-kg" type="number" value="8" min="0" step="1">
+      <label for="c-n">Sachets per cycle</label>
+      <input id="c-n" type="number" value="2" min="0" step="1">
+      <label for="c-p">Sachet price (dollars)</label>
+      <input id="c-p" type="number" value="3" min="0" step="1">
+      <button id="c-go">Price the year</button>
+      <div class="out" id="c-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/descalemath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('d-go').addEventListener('click', function(){
+  show('d-out', DescaleMath.dosePlan(num('d-vol'),num('d-str')), function(r){ return DescaleMath.renderDose(r, num('d-vol'),num('d-str')); });
+});
+document.getElementById('s-go').addEventListener('click', function(){
+  show('s-out', DescaleMath.schedulePlan(num('s-int'),num('s-min')), function(r){ return DescaleMath.renderSchedule(r, num('s-int'),num('s-min')); });
+});
+document.getElementById('c-go').addEventListener('click', function(){
+  show('c-out', DescaleMath.costPlan(num('c-g'),num('c-cyc'),num('c-kg'),num('c-n'),num('c-p')), function(r){ return DescaleMath.renderCost(r, num('c-g'),num('c-cyc'),num('c-kg'),num('c-n'),num('c-p')); });
+});
+</script>
+</body>
+</html>
